@@ -15,15 +15,15 @@ public class AdminSQLiteOpenHelper extends  SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table articulos (codigo integer not null primary key, descripcion text, presio real)");
+    public void onCreate(SQLiteDatabase bd) {
+        bd.execSQL("create table articulos (codigo integer not null primary key, descripcion text, presio real)");
 
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL ("drop table if exists articulos");
-        onCreate(db);
+    public void onUpgrade(SQLiteDatabase bd, int i, int i1) {
+        bd.execSQL ("drop table if exists articulos");
+        onCreate(bd);
 
     }
 }

@@ -1,5 +1,9 @@
 package com.itca.crud_sqlite;
 
+import android.content.ContentValues;
+import android.content.Entity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -23,9 +27,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(  this,  "administracion.db",  null, 1);
+    //final SQLiteDatabase db = admin.getwritableDatabase();
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+
+    String codigo, descrpcion, presio;
 
 
     private EditText et_codigo, et_demostracion, et_presio;
@@ -90,15 +98,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        SQLiteDatabase bd = admin.getWritableDatabase();
+        switch (view.getId()) {
+
 
             case R.id.btnAlta:
                 Toast.makeText(this, "Has hecho clic en el boton Alta", Toast.LENGTH_SHORT).show();
+                String codigo = et_codigo.getText().toString();
+                String descripcion = et_demostracion.getText().toString();
+                String presio = et_presio.getText().toString();
+                ContentValues registro =new ContentValues();
+                registro.put ("codigo", codigo);
+                registro.put("descripcion", descripcion);
+                registro.put("presio", presio);
+
+                if(codigo.isEmpty()){
+                    et_codigo.setError("Campo obligatorio");
+                }
+                else if (descripcion.isEmpty()){
+                    et_demostracion.setError("Campo obligatorio");
+                }
+                else if (presio.isEmpty()){
+                    et_presio.setError("Campo obligatorio");
+                }
+                else {
+                    bd.insert("articulos", null, registro);
+                    bd.close();
+                    et_codigo.setText(null);
+                    et_demostracion.setText(null);
+                    et_presio.setText(null);
+                    Toast.makeText(this, "Registro guardado correctamente", Toast.LENGTH_SHORT).show();
+                }
                 break;
-            case R.id.btnconsulta1:
-                Toast.makeText(this, "Has hecho clic en el boton consulta 1", Toast.LENGTH_SHORT).show();
+
+            /*case R.id.btnconsulta1:
+                //Toast.makeText(this, "Has hecho clic en el boton consulta 1", Toast.LENGTH_SHORT).show();
+                codigo = et_codigo.getText().toString();
+                if(codigo.isEmpty()){
+                    et_codigo.setError("Campo obligatorio.");
+                }else{
+                    Cursor file = bd.rawQuery("select descripcion, presio from articulos where codigo="+codigo, null);
+                    if (file.moveToFirst()){
+                        et_demostracion.setText(file.getString(0));
+                        et_presio.setText(file.getString(1));
+                    }else {
+                        Toast.makeText(this, "No existe un articulo con dicho codigo", Toast.LENGTH_SHORT).show();
+                    }
+                }
                 break;
-            case R.id.btnconsulta2:
+
+
+         /*   case R.id.btnconsulta2:
                 Toast.makeText(this, "Has hecho clic en el boton consulta 2", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btneliminar:
@@ -112,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnsalir:
                 Toast.makeText(this, "Has hecho clic en el boton salir", Toast.LENGTH_SHORT).show();
-                break;
+                break;*/
             default:
                 //break;
         }
